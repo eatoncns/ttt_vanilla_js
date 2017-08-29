@@ -6,9 +6,13 @@ setupModeSelectionPage();
 renderCurrentLocation();
 
 function setupModeSelectionPage() {
-  page = document.querySelector('div.mode-selection')
-  button = page.querySelector('input.btn')
-  button.addEventListener('click', function() { window.location.hash = '#game' })
+  page = document.querySelector('div.mode-selection');
+  button = page.querySelector('input.btn');
+  button.addEventListener('click', startGame);
+}
+
+function startGame() {
+  window.location.hash = '#game';
 }
 
 function renderCurrentLocation() {

@@ -2,7 +2,14 @@ window.onhashchange = function() {
   renderCurrentLocation();
 }
 
+setupModeSelectionPage();
 renderCurrentLocation();
+
+function setupModeSelectionPage() {
+  page = document.querySelector('div.mode-selection')
+  button = page.querySelector('input.btn')
+  button.addEventListener('click', function() { window.location.hash = '#game' })
+}
 
 function renderCurrentLocation() {
   render(decodeURI(window.location.hash));

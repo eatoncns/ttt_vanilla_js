@@ -9,7 +9,7 @@
     <div class="container">
       <h1>Tic-Tac-Toe</h1>
       <div class="mode-selection page">
-        <form class="game-options" action="/new-game" method="post">
+        <form class="game-options">
           <label>
             Game Mode
             <select name="mode">
@@ -29,6 +29,25 @@
         </form>
       </div>
       <div class="game page">
+        <div class="container">
+          <form>
+            <div class="row">
+              <button class="btn cell btn-cell" type="submit" name="move" value="1"></button>
+              <button class="btn cell btn-cell" type="submit" name="move" value="2"></button>
+              <button class="btn cell btn-cell" type="submit" name="move" value="3"></button>
+            </div>
+            <div class="row">
+              <button class="btn cell btn-cell" type="submit" name="move" value="4"></button>
+              <button class="btn cell btn-cell" type="submit" name="move" value="5"></button>
+              <button class="btn cell btn-cell" type="submit" name="move" value="6"></button>
+            </div>
+            <div class="row">
+              <button class="btn cell btn-cell" type="submit" name="move" value="7"></button>
+              <button class="btn cell btn-cell" type="submit" name="move" value="8"></button>
+              <button class="btn cell btn-cell" type="submit" name="move" value="9"></button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
     <script src="assets/js/script.js"></script>

@@ -25,6 +25,9 @@ function displayPage(url) {
   var map = {
     '': function() {
       setPageVisible('mode-selection');
+    },
+    '#game' : function() {
+      setPageVisible('game')
     }
   };
   if (map[pageUrl]) {

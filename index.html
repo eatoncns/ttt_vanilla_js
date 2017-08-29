@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+  <head> 
+    <meta charset="utf-8">
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="assets/stylesheets/main.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Tic-Tac-Toe</h1>
+      <div class="mode-selection page">
+        <form class="game-options" action="/new-game" method="post">
+          <label>
+            Game Mode
+            <select name="mode">
+              <option value="hvh">Human vs Human</option>
+              <option value="hvc">Human vs Computer</option>
+              <option value="cvh">Computer vs Human</option>
+            </select>
+          </label>
+          <label>
+            Board Size
+            <select name="board_dimension">
+              <option value="3">3x3</option>
+              <option value="4">4x4</option>
+            </select>
+          </label>
+          <input class="btn btn-default" type="submit" value="New Game">
+        </form>
+      </div>
+      <div class="game page">
+      </div>
+    </div>
+    <script src="assets/js/script.js"></script>
+  </body>
+</html>

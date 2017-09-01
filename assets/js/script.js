@@ -18,8 +18,8 @@ function setupModeSelectionPage() {
 }
 
 function startGame() {
-  window.location.hash = '#game';
   addBoard({dimension: 3, marks: ['', '', '', '', '', '', '', '', '']});
+  window.location.hash = '#game';
 }
 
 function addBoard(board) {
@@ -96,7 +96,7 @@ Handlebars.registerHelper('board', function() {
       index = row*this.dimension + col;
       mark = this.marks[index]
       space = index + 1
-      out = out + '<button class="btn cell btn-cell" type="submit" name="move" value=' +
+      out = out + ' <button class="btn cell btn-cell" type="submit" name="move" value="' +
                   space + '">' + mark + '</button>';
     }
     out = out + '</div>';

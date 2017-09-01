@@ -12,7 +12,14 @@ function setupModeSelectionPage() {
 }
 
 function startGame() {
+  addBoard({dimension: 3, marks: ['', '', '', '', '', '', '', '', '']});
   window.location.hash = '#game';
+}
+
+function addBoard(board) {
+  var boardElement = document.querySelector('div.board');
+  var boardHTML = generateBoardHTML(board);
+  boardElement.innerHTML = boardHTML;
 }
 
 function renderCurrentLocation() {
@@ -73,4 +80,21 @@ function removeClass(element, className) {
     classNameRegExp = new RegExp('\\b' + className + '\\b', 'g');
     element.className = element.className.replace(classNameRegExp, '');
   }
+}
+
+function generateBoardHTML(board) {
+  var out = '<form>';
+  for (row = 0; row < board.dimension; row++) {
+    out = out + '<div class="row">';
+    for (col = 0; col < board.dimension; col++) {
+      index = row*board.dimension + col;
+      mark = board.marks[index]
+      space = index + 1
+      out = out + ' <button class="btn cell btn-cell" type="submit" name="move" value="' +
+                  space + '">' + mark + '</button>';
+    }
+    out = out + '</div>';
+  }
+  out + '</form>';
+  return out; 
 }

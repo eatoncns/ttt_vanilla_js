@@ -2,14 +2,8 @@ window.onhashchange = function() {
   renderCurrentLocation();
 }
 
-boardTemplate = compileBoardTemplate();
 setupModeSelectionPage();
 renderCurrentLocation();
-
-function compileBoardTemplate() {
-  source = document.getElementById('board-template').innerHTML;
-  return Handlebars.compile(source);
-}
 
 function setupModeSelectionPage() {
   page = document.querySelector('div.mode-selection');
@@ -23,9 +17,9 @@ function startGame() {
 }
 
 function addBoard(board) {
-  var page = document.querySelector('div.game');
-  var boardElement = boardTemplate(board);
-  page.innerHTML = boardElement;
+  var boardElement = document.querySelector('div.board');
+  var boardHTML = generateBoardHTML(board);
+  boardElement.innerHTML = boardHTML;
 }
 
 function renderCurrentLocation() {
@@ -88,13 +82,13 @@ function removeClass(element, className) {
   }
 }
 
-Handlebars.registerHelper('board', function() {
+function generateBoardHTML(board) {
   var out = '<form>';
-  for (row = 0; row < this.dimension; row++) {
+  for (row = 0; row < board.dimension; row++) {
     out = out + '<div class="row">';
-    for (col = 0; col < this.dimension; col++) {
-      index = row*this.dimension + col;
-      mark = this.marks[index]
+    for (col = 0; col < board.dimension; col++) {
+      index = row*board.dimension + col;
+      mark = board.marks[index]
       space = index + 1
       out = out + ' <button class="btn cell btn-cell" type="submit" name="move" value="' +
                   space + '">' + mark + '</button>';
@@ -102,5 +96,5 @@ Handlebars.registerHelper('board', function() {
     out = out + '</div>';
   }
   out + '</form>';
-  return new Handlebars.SafeString(out);
-});
+  return out; 
+}

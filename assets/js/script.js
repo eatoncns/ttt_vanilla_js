@@ -78,8 +78,16 @@ function startGame() {
 
 function addBoard(board) {
   var boardElement = document.querySelector('div.board');
+  addBoardHTML(boardElement, board);
+  setupBoardButtons(boardElement);
+}
+
+function addBoardHTML(boardElement, board) {
   var boardHTML = generateBoardHTML(board);
   boardElement.innerHTML = boardHTML;
+}
+
+function setupBoardButtons(boardElement) {
   var buttons = boardElement.querySelectorAll('button.btn-cell');
   for (var i = 0; i < buttons.length; i++) {
     buttons[i].addEventListener('click', bindClick(buttons[i]));
@@ -92,7 +100,6 @@ function bindClick(button)
     button.innerHTML = button.value;
   }
 }
-
 
 function generateBoardHTML(board) {
   var out = '';

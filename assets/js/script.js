@@ -49,7 +49,7 @@ function setPageVisible(pageClass) {
 
 function hasClass(element, className) {
   element.classList ? element.classList.contains(className) 
-                    : new RegExp('\\b' + className + '\\b').test(element.className);
+    : new RegExp('\\b' + className + '\\b').test(element.className);
 }
 
 function addClass(element, className) {
@@ -72,8 +72,11 @@ function removeClass(element, className) {
 }
 
 function startGame() {
-  addBoard({dimension: 3, marks: ['', '', '', '', '', '', '', '', '']});
-  window.location.hash = '#game';
+  postAjax('http://localhost:4567/api/new-game', { board_dimension: 3, mode: "hvh"}, function(data) {
+    var board = JSON.parse(data);
+    addBoard(board);
+    window.location.hash = '#game';
+  });
 }
 
 function addBoard(board) {
@@ -97,7 +100,10 @@ function setupBoardButtons(boardElement) {
 function bindClick(button)
 {
   return function() {
-    button.innerHTML = button.value;
+    postAjax('http://localhost:4567/api/game', {move: button.value}, function(data) {
+      var board = JSON.parse(data);
+      addBoard(board);
+    });
   }
 }
 
@@ -110,9 +116,26 @@ function generateBoardHTML(board) {
       mark = board.marks[index]
       space = index + 1
       out = out + ' <button class="btn cell btn-cell" name="move" value="' +
-                  space + '">' + mark + '</button>';
+        space + '">' + mark + '</button>';
     }
     out = out + '</div>';
   }
   return out; 
+}
+
+function postAjax(url, data, success) {
+  var params = Object.keys(data).map(
+    function(k){ return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])  }
+  ).join('&');
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', url);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState>3 && xhr.status==200) { success(xhr.responseText);  }
+
+  };
+  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.send(params);
+  return xhr;
 }

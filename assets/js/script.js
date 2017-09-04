@@ -88,14 +88,14 @@ function startGame(mode, board_dimension) {
   });
 }
 
-function addBoard(board) {
+function addBoard(board, winning_spaces = []) {
   var boardElement = document.querySelector('div.board');
-  addBoardHTML(boardElement, board);
+  addBoardHTML(boardElement, board, winning_spaces);
   setupBoardButtons(boardElement);
 }
 
-function addBoardHTML(boardElement, board) {
-  var boardHTML = generateBoardHTML(board);
+function addBoardHTML(boardElement, board, winning_spaces) {
+  var boardHTML = generateBoardHTML(board, winning_spaces);
   boardElement.innerHTML = boardHTML;
 }
 
@@ -109,22 +109,40 @@ function setupBoardButtons(boardElement) {
 function bindClick(button)
 {
   return function() {
-    postAjax('http://localhost:4567/api/game', {move: button.value}, function(data) {
-      var board = JSON.parse(data);
-      addBoard(board);
-    });
+    postAjax('http://localhost:4567/api/game', {move: button.value}, updateBoard);
   }
 }
 
-function generateBoardHTML(board) {
+function updateBoard(data) {
+  var board = JSON.parse(data);
+  var winning_spaces = [];
+  if (board.game_over) {
+    postAjax('http://localhost:4567/api/result', {}, function(data) {
+      var resultInfo = JSON.parse(data);
+      winning_spaces = resultInfo.winning_spaces;
+      displayResult(resultInfo);
+      addBoard(board, winning_spaces);
+    });  
+  }
+  else {
+    addBoard(board, winning_spaces);
+  }
+}
+
+function displayResult(resultInfo) {
+
+}
+
+function generateBoardHTML(board, winning_spaces) {
   var out = '';
   for (row = 0; row < board.dimension; row++) {
     out = out + '<div class="row">';
     for (col = 0; col < board.dimension; col++) {
       index = row*board.dimension + col;
-      mark = board.marks[index]
-      space = index + 1
-      out = out + ' <button class="btn cell btn-cell" name="move" value="' +
+      mark = board.marks[index];
+      space = index + 1;
+      winningClass = winning_spaces.includes(space) ? "winning-cell" : ""; 
+      out = out + ' <button class="btn cell btn-cell ' + winningClass + '" name="move" value="' +
         space + '">' + mark + '</button>';
     }
     out = out + '</div>';

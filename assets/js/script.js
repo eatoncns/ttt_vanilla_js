@@ -11,17 +11,6 @@ function setupModeSelectionPage() {
   button.addEventListener('click', startGame);
 }
 
-function startGame() {
-  addBoard({dimension: 3, marks: ['', '', '', '', '', '', '', '', '']});
-  window.location.hash = '#game';
-}
-
-function addBoard(board) {
-  var boardElement = document.querySelector('div.board');
-  var boardHTML = generateBoardHTML(board);
-  boardElement.innerHTML = boardHTML;
-}
-
 function renderCurrentLocation() {
   render(decodeURI(window.location.hash));
 }
@@ -60,7 +49,7 @@ function setPageVisible(pageClass) {
 
 function hasClass(element, className) {
   element.classList ? element.classList.contains(className) 
-                    : new RegExp('\\b' + className + '\\b').test(element.className);
+    : new RegExp('\\b' + className + '\\b').test(element.className);
 }
 
 function addClass(element, className) {
@@ -82,19 +71,71 @@ function removeClass(element, className) {
   }
 }
 
+function startGame() {
+  postAjax('http://localhost:4567/api/new-game', { board_dimension: 3, mode: "hvh"}, function(data) {
+    var board = JSON.parse(data);
+    addBoard(board);
+    window.location.hash = '#game';
+  });
+}
+
+function addBoard(board) {
+  var boardElement = document.querySelector('div.board');
+  addBoardHTML(boardElement, board);
+  setupBoardButtons(boardElement);
+}
+
+function addBoardHTML(boardElement, board) {
+  var boardHTML = generateBoardHTML(board);
+  boardElement.innerHTML = boardHTML;
+}
+
+function setupBoardButtons(boardElement) {
+  var buttons = boardElement.querySelectorAll('button.btn-cell');
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].addEventListener('click', bindClick(buttons[i]));
+  }
+}
+
+function bindClick(button)
+{
+  return function() {
+    postAjax('http://localhost:4567/api/game', {move: button.value}, function(data) {
+      var board = JSON.parse(data);
+      addBoard(board);
+    });
+  }
+}
+
 function generateBoardHTML(board) {
-  var out = '<form>';
+  var out = '';
   for (row = 0; row < board.dimension; row++) {
     out = out + '<div class="row">';
     for (col = 0; col < board.dimension; col++) {
       index = row*board.dimension + col;
       mark = board.marks[index]
       space = index + 1
-      out = out + ' <button class="btn cell btn-cell" type="submit" name="move" value="' +
-                  space + '">' + mark + '</button>';
+      out = out + ' <button class="btn cell btn-cell" name="move" value="' +
+        space + '">' + mark + '</button>';
     }
     out = out + '</div>';
   }
-  out + '</form>';
   return out; 
+}
+
+function postAjax(url, data, success) {
+  var params = Object.keys(data).map(
+    function(k){ return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])  }
+  ).join('&');
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', url);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState>3 && xhr.status==200) { success(xhr.responseText);  }
+
+  };
+  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.send(params);
+  return xhr;
 }

@@ -164,16 +164,22 @@ function generateBoardHTML(board, winning_spaces) {
   for (row = 0; row < board.dimension; row++) {
     out = out + '<div class="row">';
     for (col = 0; col < board.dimension; col++) {
-      index = row*board.dimension + col;
-      mark = board.marks[index];
-      space = index + 1;
-      winningClass = winning_spaces.includes(space) ? "winning-cell" : ""; 
-      out = out + ' <button class="btn cell btn-cell ' + winningClass + '" name="move" value="' +
-        space + '">' + mark + '</button>';
+      out = out + generateCellHTML(board, row, col, winning_spaces);
     }
     out = out + '</div>';
   }
   return out; 
+}
+
+function generateCellHTML(board, row, col, winning_spaces) {
+  index = row*board.dimension + col;
+  mark = board.marks[index];
+  space = index + 1;
+  winningClass = winning_spaces.includes(space) ? "winning-cell" : ""; 
+  gameOver = winning_spaces.length > 0;
+  disabled = mark || gameOver ? "disabled" : "";
+  return ' <button class="btn cell btn-cell ' + winningClass + '" name="move" value="' +
+    space + '" ' + disabled + '>' + mark + '</button>';
 }
 
 function postAjax(url, data, success) {

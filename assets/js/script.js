@@ -168,8 +168,9 @@ function generateBoardHTML(board, winning_spaces) {
       mark = board.marks[index];
       space = index + 1;
       winningClass = winning_spaces.includes(space) ? "winning-cell" : ""; 
+      disabled = mark || winning_spaces.length ? "disabled" : "";
       out = out + ' <button class="btn cell btn-cell ' + winningClass + '" name="move" value="' +
-        space + '">' + mark + '</button>';
+        space + '" ' + disabled + '>' + mark + '</button>';
     }
     out = out + '</div>';
   }

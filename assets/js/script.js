@@ -6,9 +6,18 @@ setupModeSelectionPage();
 renderCurrentLocation();
 
 function setupModeSelectionPage() {
-  page = document.querySelector('div.mode-selection');
-  button = page.querySelector('input.btn');
-  button.addEventListener('click', startGame);
+  var page = document.querySelector('div.mode-selection');
+  var gameOptions = page.querySelector('form.game-options');
+  var mode = gameOptions.elements['mode'];
+  var board_dimension = gameOptions.elements['board_dimension'];
+  var button = page.querySelector('input.btn');
+  button.addEventListener('click', bindGameOptions(mode, board_dimension));
+}
+
+function bindGameOptions(mode, board_dimension) {
+  return function() {
+    startGame(mode.value, board_dimension.value)
+  }
 }
 
 function renderCurrentLocation() {
@@ -71,8 +80,8 @@ function removeClass(element, className) {
   }
 }
 
-function startGame() {
-  postAjax('http://localhost:4567/api/new-game', { board_dimension: 3, mode: "hvh"}, function(data) {
+function startGame(mode, board_dimension) {
+  postAjax('http://localhost:4567/api/new-game', { board_dimension: board_dimension, mode: mode}, function(data) {
     var board = JSON.parse(data);
     addBoard(board);
     window.location.hash = '#game';

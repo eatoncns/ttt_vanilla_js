@@ -2,23 +2,48 @@ window.onhashchange = function() {
   renderCurrentLocation();
 }
 
-setupModeSelectionPage();
+
+var ModeSelection = (function() {
+  var settings = {
+    page: document.querySelector('div.mode-selection'),
+    gameOptions: document.querySelector('form.game-options'),
+    button: document.querySelector('input.new-game')
+  };
+  
+  var me = {};
+
+  function setupBindings() {
+    settings.button.addEventListener('click', startGame);
+  }
+
+  function startGame() {
+    var mode = settings.gameOptions.elements['mode'].value;
+    var board_dimension = settings.gameOptions.elements['board_dimension'].value;
+    postAjax('http://localhost:4567/api/new-game', { board_dimension: board_dimension, mode: mode}, function(data) {
+      var board = JSON.parse(data);
+      addBoard(board);
+      window.location.hash = '#game';
+    });
+  }
+
+  me.init = function() {
+    setupBindings();
+  }
+
+  me.setVisible = function() {
+    removeClass(settings.page, 'invisible');
+  }
+
+  me.setInvisble = function() {
+    addClass(settings.page, 'invisible');
+  }
+
+  return me;
+}());
+
+ModeSelection.init();
 renderCurrentLocation();
 
-function setupModeSelectionPage() {
-  var page = document.querySelector('div.mode-selection');
-  var gameOptions = page.querySelector('form.game-options');
-  var mode = gameOptions.elements['mode'];
-  var board_dimension = gameOptions.elements['board_dimension'];
-  var button = page.querySelector('input.btn');
-  button.addEventListener('click', bindGameOptions(mode, board_dimension));
-}
-
-function bindGameOptions(mode, board_dimension) {
-  return function() {
-    startGame(mode.value, board_dimension.value)
-  }
-}
 
 function renderCurrentLocation() {
   render(decodeURI(window.location.hash));
@@ -40,7 +65,7 @@ function displayPage(url) {
   var pageUrl = url.split('/')[0];
   var map = {
     '': function() {
-      setPageVisible('mode-selection');
+      ModeSelection.setVisible();
     },
     '#game' : function() {
       setPageVisible('game')

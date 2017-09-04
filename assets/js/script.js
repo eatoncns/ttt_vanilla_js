@@ -130,7 +130,33 @@ function updateBoard(data) {
 }
 
 function displayResult(resultInfo) {
+  var resultElement = document.querySelector('div.result');
+  setResultMessage(resultElement, resultInfo);
+  setupNewGameButton(resultElement);
+  setVisible(resultElement); 
+}
 
+function setResultMessage(resultElement, resultInfo) {
+  var resultMessage = resultInfo.drawn ? "It's a draw!"
+                                       : resultInfo.winning_mark + " wins. Congratulations!";
+  var messageElement = resultElement.querySelector('p.result-message');
+  messageElement.innerHTML = resultMessage;
+}
+
+function setupNewGameButton(resultElement) {
+  var button = resultElement.querySelector('input.btn');
+  button.addEventListener('click', function() {
+    setInvisible(resultElement);
+    window.location.hash = '';
+  });
+}
+
+function setVisible(resultElement) {
+  removeClass(resultElement, 'invisible');
+}
+
+function setInvisible(resultElement) {
+  addClass(resultElement, 'invisible');
 }
 
 function generateBoardHTML(board, winning_spaces) {

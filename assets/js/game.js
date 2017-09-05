@@ -2,26 +2,12 @@ var Game = (function() {
   var settings = {
     page: document.querySelector('div.game'),
     boardElement: document.querySelector('div.board'),
-    resultElement: document.querySelector('div.result'),
-    apiURL: 'http://localhost:4567/api'
+    apiURL: 'http://localhost:4567/api/game'
   };
 
   var me = {};
 
   function setupBindings() {
-    setupBoardButtons();
-    setupNewGameButton();
-  }
-
-  function setupNewGameButton() {
-    var button = settings.resultElement.querySelector('input.btn');
-    button.addEventListener('click', function() {
-      setInvisible(settings.resultElement);
-      window.location.hash = '';
-    });
-  }
-  
-  function setupBoardButtons() {
     var buttons = settings.boardElement.querySelectorAll('button.btn-cell');
     for (var i = 0; i < buttons.length; i++) {
       buttons[i].addEventListener('click', bindClick(buttons[i]));
@@ -31,40 +17,20 @@ var Game = (function() {
   function bindClick(button)
   {
     return function() {
-      postAjax(settings.apiURL + '/game', {move: button.value}, updateBoard);
+      postAjax(settings.apiURL, {move: button.value}, updateBoard);
     }
   }
 
   function updateBoard(data) {
     var board = JSON.parse(data);
-    var winning_spaces = [];
     if (board.game_over) {
-      getAndDisplayResultInfo(board);
+      Result.display(function(winning_spaces) {
+        addBoard(board, winning_spaces);
+      });
     }
     else {
-      addBoard(board, winning_spaces);
+      addBoard(board);
     }
-  }
-
-  function getAndDisplayResultInfo(board) {
-    postAjax(settings.apiURL + '/result', {}, function(data) {
-      var resultInfo = JSON.parse(data);
-      var winning_spaces = resultInfo.winning_spaces;
-      displayResult(resultInfo);
-      addBoard(board, winning_spaces);
-    });  
-  }
-
-  function displayResult(resultInfo) {
-    setResultMessage(resultInfo);
-    setVisible(settings.resultElement); 
-  }
-
-  function setResultMessage(resultInfo) {
-    var resultMessage = resultInfo.drawn ? "It's a draw!"
-                                         : resultInfo.winning_mark + " wins. Congratulations!";
-    var messageElement = settings.resultElement.querySelector('p.result-message');
-    messageElement.innerHTML = resultMessage;
   }
 
   function addBoard(board, winning_spaces = []) {
@@ -97,14 +63,7 @@ var Game = (function() {
 
   me.init = function(board) {
     addBoard(board);
-  }
-
-  function setVisible(element) {
-    removeClass(element, 'invisible');
-  }
-
-  function setInvisible(element) {
-    addClass(element, 'invisible');
+    Result.init();
   }
 
   me.setVisible = function() {

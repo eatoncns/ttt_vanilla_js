@@ -9,14 +9,14 @@ var Result = (function() {
   function setupBindings() {
     var button = settings.resultElement.querySelector('input.btn');
     button.addEventListener('click', function() {
-      setInvisible(settings.resultElement);
+      Visibility.setInvisible(settings.resultElement);
       window.location.hash = '';
     });
   }
 
   function displayResult(resultInfo) {
     setResultMessage(resultInfo);
-    setVisible(settings.resultElement); 
+    Visibility.setVisible(settings.resultElement); 
   }
 
   function setResultMessage(resultInfo) {

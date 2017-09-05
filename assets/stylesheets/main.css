@@ -133,6 +133,8 @@ Buttons
   background: #b5b5b5;
   padding: 11px 30px;
   font-size: 14px;
+  width: 150px;
+  height: 40px;
 }
 .btn-default:hover {
   background: #707070;

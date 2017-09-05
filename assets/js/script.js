@@ -34,37 +34,43 @@ function displayPage(url) {
   }
 }
 
-function setVisible(element) {
-  removeClass(element, 'invisible');
-}
+var Visibility = (function() {
+  var me = {};
 
-function setInvisible(element) {
-  addClass(element, 'invisible');
-}
+  function hasClass(element, className) {
+    element.classList ? element.classList.contains(className) 
+      : new RegExp('\\b' + className + '\\b').test(element.className);
+  }
 
-function hasClass(element, className) {
-  element.classList ? element.classList.contains(className) 
-    : new RegExp('\\b' + className + '\\b').test(element.className);
-}
+  function addClass(element, className) {
+    if (element.classList) {
+      element.classList.add(className);
+    }
+    else if (!hasClass(element, className)) {
+      element.className += ' ' + className;
+    }
+  }
 
-function addClass(element, className) {
-  if (element.classList) {
-    element.classList.add(className);
+  function removeClass(element, className) {
+    if (element.classList) {
+      element.classList.remove(className);
+    }
+    else {
+      classNameRegExp = new RegExp('\\b' + className + '\\b', 'g');
+      element.className = element.className.replace(classNameRegExp, '');
+    }
   }
-  else if (!hasClass(element, className)) {
-    element.className += ' ' + className;
-  }
-}
 
-function removeClass(element, className) {
-  if (element.classList) {
-    element.classList.remove(className);
+  me.setVisible = function(element) {
+    removeClass(element, 'invisible');
   }
-  else {
-    classNameRegExp = new RegExp('\\b' + className + '\\b', 'g');
-    element.className = element.className.replace(classNameRegExp, '');
+
+  me.setInvisible = function(element) {
+    addClass(element, 'invisible');
   }
-}
+
+  return me;
+}());
 
 function postAjax(url, data, success) {
   var params = Object.keys(data).map(

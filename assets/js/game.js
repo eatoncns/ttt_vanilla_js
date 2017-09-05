@@ -67,11 +67,11 @@ var Game = (function() {
   }
 
   me.setVisible = function() {
-    setVisible(settings.page);
+    Visibility.setVisible(settings.page);
   }
 
   me.setInvisible = function() {
-    setInvisible(settings.page);
+    Visibility.setInvisible(settings.page);
   }
 
   return me;

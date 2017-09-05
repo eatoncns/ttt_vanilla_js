@@ -26,11 +26,11 @@ var GameOptions = (function() {
   }
 
   me.setVisible = function() {
-    removeClass(settings.page, 'invisible');
+    Visibility.setVisible(settings.page);
   }
 
   me.setInvisible = function() {
-    addClass(settings.page, 'invisible');
+    Visibility.setInvisible(settings.page);
   }
 
   return me;

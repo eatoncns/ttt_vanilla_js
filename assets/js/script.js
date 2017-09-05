@@ -34,6 +34,14 @@ function displayPage(url) {
   }
 }
 
+function setVisible(element) {
+  removeClass(element, 'invisible');
+}
+
+function setInvisible(element) {
+  addClass(element, 'invisible');
+}
+
 function hasClass(element, className) {
   element.classList ? element.classList.contains(className) 
     : new RegExp('\\b' + className + '\\b').test(element.className);
